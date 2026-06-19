@@ -6,6 +6,7 @@ use chrono::{DateTime, Duration, TimeZone, Utc};
 use dashmap::DashMap;
 use futures::TryStreamExt;
 use heck::ToTitleCase;
+use md5::Md5;
 use p256::ecdsa::signature::Signer;
 use p256::ecdsa::{Signature, SigningKey, VerifyingKey};
 use p256::pkcs8::{DecodePrivateKey, EncodePrivateKey, LineEnding};
@@ -85,6 +86,68 @@ pub struct MinecraftLoginFlow {
     pub challenge: String,
     pub session_id: String,
     pub auth_request_uri: String,
+}
+
+/// The marker stored in `Credentials::access_token` for offline accounts.
+///
+/// Offline accounts never contact Mojang's servers: their `access_token` is
+/// only ever string-substituted into Minecraft launch arguments
+/// (`${accessToken}`), and the launcher explicitly skips profile fetches and
+/// token refreshes when this marker is present.
+pub const OFFLINE_TOKEN_MARKER: &str = "offline";
+
+/// Computes the offline-mode player UUID for a given username.
+///
+/// This mirrors Java's `UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(UTF_8))`,
+/// i.e. an MD5-based type-3 UUID. Using the canonical algorithm keeps UUIDs
+/// stable across launches and compatible with offline-mode server whitelists.
+pub fn offline_player_uuid(username: &str) -> Uuid {
+    let mut hasher = Md5::new();
+    hasher.update(format!("OfflinePlayer:{username}").as_bytes());
+    let mut bytes = hasher.finalize();
+    // Set version to 3 (MD5) and variant to IETF, matching nameUUIDFromBytes.
+    bytes[6] = (bytes[6] & 0x0f) | 0x30;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    Uuid::from_bytes(bytes.into())
+}
+
+/// Creates and persists an offline (no Microsoft/Mojang auth) Minecraft
+/// account. The account is stored exactly like a real credential so the rest
+/// of the launcher (account switcher, launch args, etc.) works unchanged.
+///
+/// The returned `Credentials` are marked `active: true`, which deactivates any
+/// previously active account (same behavior as the online login flow).
+#[tracing::instrument]
+pub async fn login_offline(
+    username: String,
+    exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
+) -> crate::Result<Credentials> {
+    let username = username.trim().to_string();
+    if username.is_empty() {
+        return Err(crate::ErrorKind::OtherError(
+            "Offline username cannot be empty".to_string(),
+        )
+        .as_error()
+        .into());
+    }
+
+    let credentials = Credentials {
+        offline_profile: MinecraftProfile {
+            id: offline_player_uuid(&username),
+            name: username,
+            ..MinecraftProfile::default()
+        },
+        access_token: OFFLINE_TOKEN_MARKER.to_string(),
+        refresh_token: String::new(),
+        // Effectively never expires. refresh() is a no-op for offline creds,
+        // so this value is never actually consulted, but a far-future expiry
+        // keeps any future "is this token fresh?" checks happy.
+        expires: Utc::now() + Duration::days(365 * 100),
+        active: true,
+    };
+
+    credentials.upsert(exec).await?;
+    Ok(credentials)
 }
 
 #[tracing::instrument]
@@ -245,12 +308,27 @@ impl OnlineProfileCacheIntent {
 }
 
 impl Credentials {
+    /// Returns `true` if this is an offline (no Microsoft/Mojang auth) account.
+    ///
+    /// Offline accounts are identified by the [`OFFLINE_TOKEN_MARKER`] sentinel
+    /// stored in `access_token`. They never need their token refreshed and
+    /// never have an online profile to fetch.
+    pub fn is_offline(&self) -> bool {
+        self.access_token == OFFLINE_TOKEN_MARKER
+    }
+
     /// Refreshes the authentication tokens for this user if they are expired, or
     /// very close to expiration.
     async fn refresh(
         &mut self,
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<()> {
+        // Offline accounts have no refreshable token and must never contact
+        // Mojang's auth servers.
+        if self.is_offline() {
+            return Ok(());
+        }
+
         // Use a margin of 5 minutes to give e.g. Minecraft and potentially
         // other operations that depend on a fresh token 5 minutes to complete
         // from now, and deal with some classes of clock skew
@@ -331,6 +409,11 @@ impl Credentials {
         &self,
         cache_intent: OnlineProfileCacheIntent,
     ) -> Option<Arc<MinecraftProfile>> {
+        // Offline accounts have no online profile to fetch from Mojang.
+        if self.is_offline() {
+            return None;
+        }
+
         let max_age = cache_intent.max_age();
         let stale_profile = {
             let mut profile_cache = PROFILE_CACHE.lock().await;
@@ -1399,13 +1482,13 @@ async fn minecraft_entitlements(
     token: &str,
 ) -> Result<MinecraftEntitlements, MinecraftAuthenticationError> {
     let res = auth_retry(|| {
-		INSECURE_REQWEST_CLIENT
-			.get(format!("https://api.minecraftservices.com/entitlements/license?requestId={}", Uuid::new_v4()))
-			.header("Accept", "application/json")
-			.header("User-Agent", MINECRAFT_SERVICES_USER_AGENT)
-			.bearer_auth(token)
-			.send()
-	})
+                INSECURE_REQWEST_CLIENT
+                        .get(format!("https://api.minecraftservices.com/entitlements/license?requestId={}", Uuid::new_v4()))
+                        .header("Accept", "application/json")
+                        .header("User-Agent", MINECRAFT_SERVICES_USER_AGENT)
+                        .bearer_auth(token)
+                        .send()
+        })
     .await.map_err(|source| MinecraftAuthenticationError::Request { source, step: MinecraftAuthStep::MinecraftEntitlements })?;
 
     let status = res.status();

@@ -899,11 +899,17 @@
   "minecraft-account.add-account": {
     "message": "Add account"
   },
+  "minecraft-account.add-offline-account": {
+    "message": "Add offline account"
+  },
   "minecraft-account.label": {
     "message": "Minecraft account"
   },
   "minecraft-account.not-signed-in": {
     "message": "Not signed in"
+  },
+  "minecraft-account.offline-badge": {
+    "message": "Offline"
   },
   "minecraft-account.remove-account": {
     "message": "Remove account"
@@ -913,6 +919,42 @@
   },
   "minecraft-account.sign-in": {
     "message": "Sign in to Minecraft"
+  },
+  "offline-account.cancel": {
+    "message": "Cancel"
+  },
+  "offline-account.description": {
+    "message": "Play Minecraft without a Microsoft account using a custom username. Works on offline-mode servers and singleplayer."
+  },
+  "offline-account.error.generic": {
+    "message": "Could not create offline account. Please try again."
+  },
+  "offline-account.error.invalid-chars": {
+    "message": "Only letters, numbers, and underscores are allowed."
+  },
+  "offline-account.error.too-long": {
+    "message": "Username must be at most 16 characters."
+  },
+  "offline-account.error.too-short": {
+    "message": "Username must be at least 3 characters."
+  },
+  "offline-account.login": {
+    "message": "Login"
+  },
+  "offline-account.random-username": {
+    "message": "Generate a random username"
+  },
+  "offline-account.title": {
+    "message": "Add new offline account"
+  },
+  "offline-account.username-hint": {
+    "message": "3-16 characters, letters, numbers, and underscores only."
+  },
+  "offline-account.username-label": {
+    "message": "Enter your player name"
+  },
+  "offline-account.username-placeholder": {
+    "message": "Your player name here..."
   },
   "search.filter.locked.instance": {
     "message": "Provided by the instance"

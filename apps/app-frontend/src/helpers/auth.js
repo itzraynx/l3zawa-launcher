@@ -18,7 +18,7 @@ import { invoke } from '@tauri-apps/api/core'
  * not reachable.
  */
 export async function check_reachable() {
-	await invoke('plugin:auth|check_reachable')
+        await invoke('plugin:auth|check_reachable')
 }
 
 /**
@@ -30,7 +30,19 @@ export async function check_reachable() {
  * @property {string} user_code - The code to enter on the verification_uri page.
  */
 export async function login() {
-	return await invoke('plugin:auth|login')
+        return await invoke('plugin:auth|login')
+}
+
+/**
+ * Creates an offline (no Microsoft/Mojang auth) Minecraft account with the
+ * given username and marks it as the active account.
+ *
+ * @param {string} username - The player name to use. Must be 3-16 characters,
+ *   matching Minecraft's username rules (A-Z, a-z, 0-9, _).
+ * @returns {Promise<Credentials>} The newly created offline credentials.
+ */
+export async function login_offline(username) {
+        return await invoke('plugin:auth|login_offline', { username })
 }
 
 /**
@@ -38,7 +50,7 @@ export async function login() {
  * @return {Promise<UUID | undefined>}
  */
 export async function get_default_user() {
-	return await invoke('plugin:auth|get_default_user')
+        return await invoke('plugin:auth|get_default_user')
 }
 
 /**
@@ -46,7 +58,7 @@ export async function get_default_user() {
  * @param {UUID} user
  */
 export async function set_default_user(user) {
-	return await invoke('plugin:auth|set_default_user', { user })
+        return await invoke('plugin:auth|set_default_user', { user })
 }
 
 /**
@@ -54,7 +66,7 @@ export async function set_default_user(user) {
  * @param {UUID} user
  */
 export async function remove_user(user) {
-	return await invoke('plugin:auth|remove_user', { user })
+        return await invoke('plugin:auth|remove_user', { user })
 }
 
 /**
@@ -62,5 +74,5 @@ export async function remove_user(user) {
  * @returns {Promise<Credential[]>}
  */
 export async function users() {
-	return await invoke('plugin:auth|get_users')
+        return await invoke('plugin:auth|get_users')
 }
