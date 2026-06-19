@@ -1,35 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 590 590" width="590" height="590">
-    <!--
-        L3zawa Launcher logo
-
-        A four-point "nova" star burst. The shape is built from two overlapping
-        four-point sparkles — a large outer one and a smaller inner one — to give
-        the mark depth. The color is driven by the `--color-brand` CSS variable
-        so the logo automatically follows the launcher's theme.
-
-        To recolor: change `var(--color-brand)` below, or set --color-brand in
-        apps/app-frontend/src/assets/stylesheets/global.scss.
-    -->
     <defs>
-        <linearGradient id="nova-grad" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="l3zawa-grad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--color-brand)" stop-opacity="1" />
             <stop offset="100%" stop-color="var(--color-brand)" stop-opacity="0.75" />
         </linearGradient>
     </defs>
-
-    <!-- Outer four-point nova star -->
     <path
         d="M295 20 C 310 180, 410 280, 570 295 C 410 310, 310 410, 295 570 C 280 410, 180 310, 20 295 C 180 280, 280 180, 295 20 Z"
-        fill="url(#nova-grad)"
+        fill="url(#l3zawa-grad)"
     />
-
-    <!-- Inner smaller sparkle for depth -->
     <path
         d="M295 150 C 303 230, 360 287, 440 295 C 360 303, 303 360, 295 440 C 287 360, 230 303, 150 295 C 230 287, 287 230, 295 150 Z"
         fill="#ffffff"
         fill-opacity="0.18"
     />
-
-    <!-- Center dot -->
     <circle cx="295" cy="295" r="34" fill="#ffffff" fill-opacity="0.95" />
 </svg>
