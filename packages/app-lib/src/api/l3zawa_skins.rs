@@ -65,7 +65,7 @@ pub async fn get_skin_server_url() -> String {
 /// Returns the username to use for skin operations: the active account's name.
 async fn get_active_username() -> crate::Result<String> {
     let state = crate::State::get().await?;
-    let creds = super::Credentials::get_active(&state.pool).await?;
+    let creds = crate::state::Credentials::get_active(&state.pool).await?;
     match creds {
         Some(c) => Ok(c.offline_profile.name),
         None => Err(
