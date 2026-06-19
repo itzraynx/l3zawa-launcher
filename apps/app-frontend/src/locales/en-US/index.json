@@ -981,7 +981,7 @@
     "message": "Loader is provided by the server"
   },
   "unknown-pack-warning-modal.body": {
-    "message": "A file is only reviewed if it’s uploaded to Modrinth, regardless of its file format (including .mrpack)."
+    "message": "A file is only reviewed if it\u2019s uploaded to Modrinth, regardless of its file format (including .mrpack)."
   },
   "unknown-pack-warning-modal.dont-show-again": {
     "message": "Don't show this warning again"
@@ -1000,5 +1000,74 @@
   },
   "unknown-pack-warning-modal.warning.title": {
     "message": "Unknown file warning"
+  },
+  "l3zawa-skins.title": {
+    "message": "L3zawa Skins"
+  },
+  "l3zawa-skins.subtitle": {
+    "message": "Custom skins & capes visible to all L3zawa Launcher users"
+  },
+  "l3zawa-skins.server-online": {
+    "message": "Server online"
+  },
+  "l3zawa-skins.server-offline": {
+    "message": "Server offline"
+  },
+  "l3zawa-skins.no-account-title": {
+    "message": "No active account"
+  },
+  "l3zawa-skins.no-account-desc": {
+    "message": "Sign in or add an offline account to upload skins."
+  },
+  "l3zawa-skins.no-skin": {
+    "message": "Upload a skin to get started"
+  },
+  "l3zawa-skins.skin-section": {
+    "message": "Skin"
+  },
+  "l3zawa-skins.cape-section": {
+    "message": "Cape"
+  },
+  "l3zawa-skins.model": {
+    "message": "Model"
+  },
+  "l3zawa-skins.classic": {
+    "message": "Classic"
+  },
+  "l3zawa-skins.slim": {
+    "message": "Slim"
+  },
+  "l3zawa-skins.upload-skin": {
+    "message": "Upload skin"
+  },
+  "l3zawa-skins.upload-cape": {
+    "message": "Upload cape"
+  },
+  "l3zawa-skins.remove": {
+    "message": "Remove"
+  },
+  "l3zawa-skins.current-skin": {
+    "message": "Current skin"
+  },
+  "l3zawa-skins.current-cape": {
+    "message": "Current cape"
+  },
+  "l3zawa-skins.uploaded-on": {
+    "message": "Uploaded"
+  },
+  "l3zawa-skins.how-title": {
+    "message": "How it works"
+  },
+  "l3zawa-skins.how-1": {
+    "message": "Upload your skin and/or cape above."
+  },
+  "l3zawa-skins.how-2": {
+    "message": "Launch any instance \u2014 the CustomSkinLoader mod is auto-injected."
+  },
+  "l3zawa-skins.how-3": {
+    "message": "The mod fetches skins from the L3zawa skin server instead of Mojang."
+  },
+  "l3zawa-skins.how-4": {
+    "message": "Anyone using L3zawa Launcher sees your skin in-game \u2014 and you see theirs."
   }
 }

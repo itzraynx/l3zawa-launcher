@@ -130,6 +130,22 @@ fn main() {
                     ),
             )
             .plugin(
+                "l3zawa-skins",
+                InlinedPlugin::new()
+                    .commands(&[
+                        "l3zawa_upload_skin",
+                        "l3zawa_upload_cape",
+                        "l3zawa_get_my_skin_info",
+                        "l3zawa_remove_my_skin",
+                        "l3zawa_remove_my_cape",
+                        "l3zawa_texture_url",
+                        "l3zawa_get_skin_server_url",
+                    ])
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
+            )
+            .plugin(
                 "mr-auth",
                 InlinedPlugin::new()
                     .commands(&[

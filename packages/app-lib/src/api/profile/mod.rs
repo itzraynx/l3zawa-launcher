@@ -825,6 +825,14 @@ async fn run_credentials(
         .as_ref()
         .or(settings.hooks.pre_launch.as_ref())
         .filter(|hook_command| !hook_command.is_empty());
+
+    // L3zawa: inject the CustomSkinLoader mod + config so that anyone using
+    // the launcher sees custom skins fetched from the L3zawa skin server.
+    // This is a best-effort, non-fatal step: if it fails, the game still
+    // launches, just without cross-user custom skins.
+    if let Err(e) = crate::api::l3zawa_skins::inject_skin_mod(&profile).await {
+        tracing::warn!("Failed to inject L3zawa skin mod: {e}");
+    }
     if let Some(hook) = pre_launch_hooks {
         // TODO: hook parameters
         let mut cmd = shlex::split(hook)

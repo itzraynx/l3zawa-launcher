@@ -1,0 +1,13 @@
+{
+  "name": "l3zawa-skin-server",
+  "version": "1.0.0",
+  "description": "L3zawa Launcher skin server — stores and serves custom skins/capes in CustomSkinAPI format",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "start": "bun index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.0"
+  }
+}

@@ -3,6 +3,7 @@ pub mod cache;
 pub mod friends;
 pub mod handler;
 pub mod jre;
+pub mod l3zawa_skins;
 pub mod logs;
 pub mod metadata;
 pub mod minecraft_auth;

@@ -5,6 +5,7 @@ use thiserror::Error;
 pub mod auth;
 pub mod import;
 pub mod jre;
+pub mod l3zawa_skins;
 pub mod logs;
 pub mod metadata;
 pub mod minecraft_skins;
