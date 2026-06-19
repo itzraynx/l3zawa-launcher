@@ -4,7 +4,7 @@
         <div class="header-section">
             <div class="flex items-center gap-4">
                 <div class="brand-logo">
-                    <SkinIcon class="w-8 h-8 text-brand" />
+                    <ChangeSkinIcon class="w-8 h-8 text-brand" />
                 </div>
                 <div>
                     <h1 class="text-2xl font-bold text-contrast m-0">
@@ -164,7 +164,6 @@
 <script setup lang="ts">
 import {
     ChangeSkinIcon,
-    SkinIcon,
     SpinnerIcon,
     TrashIcon,
     UploadIcon,
