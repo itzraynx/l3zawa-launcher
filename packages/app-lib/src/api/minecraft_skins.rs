@@ -191,6 +191,24 @@ impl PendingSkinChange {
         }
     }
 
+    /// Returns true if the credentials for this pending change are an offline
+    /// account. Offline accounts can't change skins on Mojang's servers.
+    fn is_offline(&self) -> bool {
+        match self {
+            Self::AddAndEquipCustom {
+                selected_credentials,
+                ..
+            }
+            | Self::Equip {
+                selected_credentials,
+                ..
+            }
+            | Self::Unequip {
+                selected_credentials,
+            } => selected_credentials.is_offline(),
+        }
+    }
+
     fn matches_skin(&self, skin: &Skin) -> bool {
         match self {
             Self::AddAndEquipCustom {
@@ -1181,6 +1199,12 @@ async fn flush_pending_skin_change_inner(
 async fn execute_pending_skin_change(
     change: &PendingSkinChange,
 ) -> crate::Result<()> {
+    // Offline accounts can't change skins on Mojang's servers (their
+    // access_token is the "offline" sentinel). Skip any pending skin change
+    // for them — it would just fail with a 401.
+    if change.is_offline() {
+        return Ok(());
+    }
     match change {
         PendingSkinChange::AddAndEquipCustom {
             selected_credentials,
