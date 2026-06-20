@@ -906,7 +906,10 @@ async fn run_credentials(
     // For server projects: track this play in analytics
     if let Some(linked_data) = &profile.linked_data {
         let project_id = &linked_data.project_id;
-        if !project_id.trim().is_empty() {
+        if !project_id.trim().is_empty() && !credentials.is_offline() {
+            // Offline accounts can't join the Mojang session server (no valid
+            // token), so skip the analytics tracking for them — it would just
+            // fail with a 401 and log a warning every launch.
             let server_id = uuid::Uuid::new_v4().to_string();
 
             let join_result = fetch::INSECURE_REQWEST_CLIENT
